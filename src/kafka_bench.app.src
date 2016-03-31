@@ -1,0 +1,21 @@
+{application, kafka_bench,
+ [
+  {description, "Kafka benchmark"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, {kafka_bench_app, []}},
+  {applications, [
+                  kernel,
+                  stdlib,
+
+                  lager,
+                  brod
+                 ]},
+  {env, []},
+  {modules, []},
+
+  {contributors, []},
+  {licenses, []},
+  {links, []}
+ ]}.
+
