@@ -87,11 +87,13 @@ handle_message(Topic, _Partition, #kafka_message{offset = Offset, value = Value}
 handle_message(_Topic, _Partition, #kafka_message{offset = Offset, value = Value} = Message, #state{rev_count = RevCount} = State) ->
     {ok, ack, State#state{rev_count = RevCount - 1}}.
 
+producer_perf(BootstrapHosts, Topic, Count, Size) when is_integer(Size) ->
+    Message = list_to_binary(lists:duplicate(Size, 1)),
+    producer_perf(BootstrapHosts, Topic, Count, Message);
 
-producer_perf(BootstrapHosts, Topic, Count, Size) ->
+producer_perf(BootstrapHosts, Topic, Count, Message) ->
     Producers = start_producer(BootstrapHosts, Topic),
     Iterations = lists:seq(0, Count div length(Producers)),
-    Message = list_to_binary(lists:duplicate(Size, 1)),
     StartTime = os:timestamp(),
     ok = prun(Iterations, Producers, fun({Partition, ProducerId}) -> ok = brod:produce_sync(ProducerId, Topic, Partition, <<>>, Message) end),
     StopTime = os:timestamp(),
